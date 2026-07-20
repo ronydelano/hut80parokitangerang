@@ -1,4 +1,23 @@
 {
-  "title": "HUT80 Paroki Tangerang",
-  "tasks": []
+  "title": "Project HUT80 Paroki Tangerang",
+  "tasks": [
+    {
+      "id": "t_mrt16yw7pz5mv",
+      "name": "Pembentukan Panitia",
+      "pic": "Panitia Inti",
+      "start": "2026-07-01",
+      "end": "2026-07-31",
+      "progress": 85,
+      "notes": "yang belum :\n- Korbid Sarana Umum\n- Perizinan\n- Starfest (Iwan)\n- Funwalk (Angel, Andre)"
+    },
+    {
+      "id": "t_mrt2qnap722wz",
+      "name": "Pengumpulan Ide",
+      "pic": "Panitia Inti",
+      "start": "2026-07-01",
+      "end": "2026-07-31",
+      "progress": 0,
+      "notes": ""
+    }
+  ]
 }
