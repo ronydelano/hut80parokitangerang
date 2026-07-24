@@ -142,14 +142,14 @@
 /* ============================================================
    DEFAULT DATA SOURCE — keep these in sync with hut80-progress.html
    ============================================================ */
-const DEFAULT_OWNER  = 'YOUR_GITHUB_USERNAME';  // <-- EDIT: same as hut80-progress.html
-const DEFAULT_REPO   = 'YOUR_REPO_NAME';        // <-- EDIT: same as hut80-progress.html
+const DEFAULT_OWNER  = 'ronydelano';  // <-- EDIT: same as hut80-progress.html
+const DEFAULT_REPO   = 'hut80parokitangerang';        // <-- EDIT: same as hut80-progress.html
 const DEFAULT_BRANCH = 'main';
 const DOC_PATH = 'data/documentation.json';
 const PHOTO_FOLDER = 'data/photo/event';
 
 function isPlaceholderConfig(){
-  return DEFAULT_OWNER === 'YOUR_GITHUB_USERNAME' || DEFAULT_REPO === 'YOUR_REPO_NAME';
+  return DEFAULT_OWNER === 'ronydelano' || DEFAULT_REPO === 'hut80parokitangerang';
 }
 
 const Store = makeGitHubStore(DEFAULT_OWNER, DEFAULT_REPO, DEFAULT_BRANCH);
