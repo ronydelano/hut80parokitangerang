@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontak — HUT ke-80</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <div class="nav-brand">Paroki Tangerang <span class="badge80">HUT 80</span></div>
+    <button class="nav-toggle" id="navToggle">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Beranda</a>
+      <a href="panitia.html">Panitia</a>
+      <a href="hut80-progress.html">Progress HUT80</a>
+      <a href="dokumentasi.html">Dokumentasi</a>
+      <a href="kontak.html" class="active">Kontak</a>
+    </div>
+  </nav>
+</header>
+
+<div class="page-head">
+  <h1>Kontak</h1>
+  <p>Hubungi sekretariat paroki untuk informasi lebih lanjut.</p>
+</div>
+
+<div class="contact-wrap">
+  <div class="contact-card">
+    <h3>Alamat &amp; Kontak</h3>
+    <div class="row"><b>Gereja</b><span>Gereja Katolik Hati Santa Perawan Maria Tak Bernoda</span></div>
+    <div class="row"><b>Alamat</b><span>Jalan Daan Mogot No. 14, Kecamatan Tangerang, Banten 15111</span></div>
+    <div class="row"><b>Telepon</b><span>(021) 552 3169, 558 3745</span></div>
+    <div class="row"><b>Fax</b><span>(021) 552 1044</span></div>
+    <div class="row"><b>WhatsApp</b><span><a href="https://wa.me/6281935523169" target="_blank" rel="noopener">0819 3552 3169</a></span></div>
+    <div class="row"><b>Email</b><span><a href="mailto:sekretariat@santamaria.or.id">sekretariat@santamaria.or.id</a></span></div>
+    <div class="row"><b>Peta</b><span><a href="https://maps.app.goo.gl/1cHKyzpJ8sE32JKk8" target="_blank" rel="noopener">Buka di Google Maps ↗</a></span></div>
+  </div>
+
+  <div class="contact-card" style="padding:0;overflow:hidden;">
+    <iframe class="map-frame"
+      src="https://www.google.com/maps?q=-6.1738488,106.6298763&z=17&output=embed"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    Gereja Katolik Hati Santa Perawan Maria Tak Bernoda &nbsp;|&nbsp; <a href="kontak.html">Hubungi Kami</a>
+  </div>
+</footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click', ()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+</script>
+</body>
+</html>

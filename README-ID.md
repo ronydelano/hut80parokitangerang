@@ -1,158 +1,213 @@
-# Panduan Setup — Project Monitor (Online, GitHub sebagai Database)
+# Panduan Setup — Situs HUT ke-80 Paroki (GitHub sebagai Database)
 
-Aplikasi ini adalah **satu file HTML** (`index.html`) yang:
-- Bisa **dilihat siapa saja** tanpa login (Gantt chart, tabel task, kurva-S, dsb).
-- Hanya bisa **ditambah/diedit/dihapus** oleh orang yang **login** (username + password) **dan** punya **GitHub Personal Access Token** dengan izin tulis ke repo data.
-- Menyimpan datanya sebagai file `data/tasks.json` di dalam **repository GitHub** milik Anda — jadi GitHub sekaligus jadi "database" dan tempat hosting.
+Situs ini terdiri dari beberapa halaman statis (HTML biasa, tanpa server) yang saling
+terhubung lewat menu navigasi:
 
-Total waktu setup: sekitar 10–15 menit.
+```
+index.html            → Beranda
+panitia.html           → Susunan Panitia (bagan organisasi + foto)
+hut80-progress.html    → Progress persiapan HUT80 (task, Gantt chart, kurva-S)
+dokumentasi.html        → Galeri foto kegiatan (Fun Walk, Starfest, dst)
+kontak.html             → Info kontak paroki
+css/site.css            → Tampilan bersama semua halaman
+js/common.js            → Login & GitHub API bersama (dipakai dokumentasi.html)
+data/tasks.json          → Data task Progress HUT80
+data/documentation.json  → Data album & foto Dokumentasi
+data/photo/panitia/       → Foto-foto panitia (Anda upload manual)
+data/photo/event/          → Foto-foto dokumentasi kegiatan
+```
+
+Semua data (task, foto dokumentasi) disimpan sebagai file di dalam **repository GitHub**
+Anda sendiri — GitHub sekaligus jadi database dan hosting-nya gratis.
 
 ---
 
 ## 1. Buat Repository GitHub
 
-1. Login ke [github.com](https://github.com) (buat akun dulu kalau belum punya, gratis).
-2. Klik tombol **+** di kanan atas → **New repository**.
-3. Isi:
-   - **Repository name**: bebas, misal `project-monitor`
-   - **Visibility**: pilih **Public** (wajib — supaya siapa saja bisa melihat datanya tanpa login. Kalau dibuat Private, orang lain tidak akan bisa membaca `data/tasks.json` sama sekali).
-4. Klik **Create repository**.
+1. Login ke [github.com](https://github.com) (buat akun dulu kalau belum ada).
+2. Klik **+** (kanan atas) → **New repository**.
+3. Isi nama repo (misal `hut80-paroki`), pilih **Public** (wajib, supaya semua halaman bisa
+   dilihat siapa saja tanpa login).
+4. **Create repository**.
 
-> ⚠️ Karena repo harus Public, **jangan simpan data proyek yang rahasia/sensitif** di aplikasi ini — siapa pun bisa membaca isi `data/tasks.json` langsung dari GitHub, terlepas dari ada login atau tidak di aplikasinya. Login di aplikasi hanya mengatur siapa yang **boleh mengubah data**, bukan siapa yang boleh **melihat**.
-
----
-
-## 2. Upload `index.html` dan `data/tasks.json`
-
-Dari repo yang baru dibuat:
-
-1. Klik **Add file → Upload files**.
-2. Upload file `index.html` (dari paket yang saya berikan).
-3. Untuk `data/tasks.json`, di kotak nama file pastikan diketik lengkap dengan foldernya: `data/tasks.json` (GitHub otomatis akan membuat folder `data`). Isinya:
-   ```json
-   {
-     "title": "Project Name",
-     "tasks": []
-   }
-   ```
-4. Klik **Commit changes** (bisa langsung commit ke branch `main`).
-
-Struktur akhir repo:
-```
-project-monitor/
-├── index.html
-└── data/
-    └── tasks.json
-```
+> ⚠️ Karena repo Public, semua isi `data/` (termasuk foto) bisa dilihat siapa saja yang
+> tahu alamat filenya. Jangan unggah foto/dokumen yang sifatnya pribadi/rahasia di sini.
 
 ---
 
-## 3. Edit konfigurasi di `index.html`
+## 2. Upload semua file ke repo
 
-Sebelum dipublish, edit **4 baris** di bagian atas `<script>` supaya aplikasi otomatis tahu harus baca dari repo Anda:
+Upload seluruh isi paket ini (jaga strukturnya persis seperti di atas):
+- `index.html`, `panitia.html`, `hut80-progress.html`, `dokumentasi.html`, `kontak.html`
+- folder `css/` (isi `site.css`)
+- folder `js/` (isi `common.js`)
+- folder `data/` (isi `tasks.json`, `documentation.json`, dan sub-folder `photo/panitia/`, `photo/event/`)
 
-Cari blok ini (gunakan tombol **Edit** ✎ di GitHub, atau edit di komputer lalu upload ulang):
+Cara termudah: klik **Add file → Upload files** di GitHub, lalu seret (drag & drop)
+seluruh folder/file sekaligus.
 
+---
+
+## 3. Edit konfigurasi GitHub di 2 file
+
+Supaya semua pengunjung otomatis membaca repo yang benar (tanpa perlu setting manual),
+edit baris berikut di **dua file**:
+
+**a. `hut80-progress.html`** — cari blok `DEFAULT_GH_CONFIG`:
 ```js
 const DEFAULT_GH_CONFIG = {
-  owner:  'YOUR_GITHUB_USERNAME',   // <-- GANTI: username GitHub Anda
-  repo:   'YOUR_REPO_NAME',         // <-- GANTI: nama repo, misal 'project-monitor'
+  owner:  'YOUR_GITHUB_USERNAME',   // <-- ganti username GitHub Anda
+  repo:   'YOUR_REPO_NAME',         // <-- ganti nama repo, misal 'hut80-paroki'
   branch: 'main',
   path:   'data/tasks.json'
 };
 ```
 
-Ganti `YOUR_GITHUB_USERNAME` dan `YOUR_REPO_NAME` sesuai punya Anda, lalu **Commit changes**.
+**b. `dokumentasi.html`** — cari blok di dekat atas `<script>`:
+```js
+const DEFAULT_OWNER  = 'YOUR_GITHUB_USERNAME';  // <-- sama seperti di atas
+const DEFAULT_REPO   = 'YOUR_REPO_NAME';        // <-- sama seperti di atas
+```
 
-> Ini yang membuat data **langsung terbaca otomatis oleh siapa saja** yang membuka halamannya — tanpa langkah ini, setiap pengunjung harus mengisi manual di menu "Data Source", yang tidak praktis untuk publik.
-
----
-
-## 4. Ganti username & password login editor
-
-Secara default, aplikasi punya 1 akun bawaan: `admin` / `admin123`. **Wajib diganti** sebelum dipublish.
-
-1. Buka Developer Console browser (tekan `F12`, tab **Console**).
-2. Jalankan kode berikut, ganti `'password-baru-anda'` dengan password pilihan Anda:
-   ```js
-   crypto.subtle.digest('SHA-256', new TextEncoder().encode('password-baru-anda'))
-     .then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')));
-   ```
-3. Console akan menampilkan sebuah teks panjang (hash). Copy teks tersebut.
-4. Di `index.html`, cari:
-   ```js
-   const USERS = [
-     { username: 'admin', hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9' }
-   ];
-   ```
-5. Ganti `username` sesuai keinginan, dan ganti nilai `hash` dengan hasil copy tadi. Bisa tambah beberapa akun sekaligus:
-   ```js
-   const USERS = [
-     { username: 'budi', hash: 'HASIL_HASH_BUDI' },
-     { username: 'siti', hash: 'HASIL_HASH_SITI' }
-   ];
-   ```
-6. Commit changes.
-
-> Catatan jujur soal keamanan: karena ini website statis (tanpa server), password ini **hanya gerbang UI sederhana** — orang yang cukup paham teknis bisa melihat source code dan mem-bypass-nya lewat console browser. Proteksi yang sesungguhnya ada di langkah berikutnya: **Personal Access Token**, yang benar-benar diverifikasi oleh server GitHub, bukan oleh kode di browser. Jangan simpan data sangat sensitif di aplikasi ini.
+Isi `owner`/`repo` di kedua file **harus sama persis**. Commit perubahan setelah edit.
 
 ---
 
-## 5. Aktifkan GitHub Pages (hosting gratis)
+## 4. Ganti password login editor
 
-1. Di halaman repo, buka **Settings → Pages** (menu kiri).
-2. Pada **Build and deployment → Source**, pilih **Deploy from a branch**.
-3. **Branch**: pilih `main`, folder `/ (root)` → **Save**.
-4. Tunggu 1–2 menit. Situs akan aktif di:
+Login dipakai bersama di `hut80-progress.html` dan `dokumentasi.html`. Defaultnya sudah
+Anda ganti sebelumnya di `hut80-progress.html` — pastikan hash yang sama juga dipasang di
+`js/common.js` supaya login bekerja di kedua halaman:
+
+1. Buka `hut80-progress.html`, cari `const USERS = [ ... ]`, salin nilai `hash` di dalamnya.
+2. Buka `js/common.js`, cari `const USERS = [ ... ]`, tempel nilai `hash` yang sama di sana
+   (dan `username` yang sama juga).
+
+Kalau mau ganti password lagi kapan pun:
+```js
+crypto.subtle.digest('SHA-256', new TextEncoder().encode('password-baru-anda'))
+  .then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')));
+```
+Jalankan di Console browser (F12 → Console), copy hasilnya, tempel ke **kedua file**
+(`hut80-progress.html` dan `js/common.js`) supaya tetap konsisten.
+
+---
+
+## 5. Aktifkan GitHub Pages
+
+1. Di repo → **Settings → Pages**.
+2. **Source**: Deploy from a branch → **Branch**: `main`, folder `/ (root)` → **Save**.
+3. Tunggu 1-2 menit. Situs aktif di:
    ```
    https://<username-anda>.github.io/<nama-repo>/
    ```
-5. Buka URL tersebut — halaman Project Monitor akan langsung tampil, dan otomatis membaca `data/tasks.json` dari repo Anda (kartu ringkasan, tabel, Gantt chart, dan kurva-S akan langsung terisi begitu ada task).
-
-### Alternatif hosting gratis lain (opsional)
-Kalau tidak ingin pakai GitHub Pages, `index.html` ini juga bisa langsung di-drag-and-drop ke:
-- **Netlify Drop**: [app.netlify.com/drop](https://app.netlify.com/drop)
-- **Vercel**: `npx vercel` di folder yang berisi `index.html`
-
-Databasenya (`data/tasks.json`) tetap di GitHub — hosting file HTML-nya boleh di mana saja, tidak harus GitHub Pages.
+4. Buka URL itu — halaman **Beranda** akan tampil dengan menu Panitia, Progress HUT80,
+   Dokumentasi, dan Kontak di kanan atas.
 
 ---
 
-## 6. Membuat GitHub Personal Access Token (untuk yang boleh edit)
+## 6. Membuat GitHub Personal Access Token (untuk editor)
 
-Setiap orang yang **berhak mengedit** task perlu token pribadi mereka sendiri (bukan dibagi bersama — masing-masing bikin token sendiri):
+Sama seperti sebelumnya — setiap editor butuh token pribadi dengan akses tulis **hanya**
+ke repo ini:
 
-1. Login ke GitHub → klik foto profil (kanan atas) → **Settings**.
-2. Scroll ke bawah, buka **Developer settings** (menu paling kiri bawah).
-3. Pilih **Personal access tokens → Fine-grained tokens → Generate new token**.
-4. Isi:
-   - **Token name**: bebas, misal `project-monitor-editor`
-   - **Expiration**: pilih sesuai kebutuhan (misal 90 hari, atau custom lebih lama)
-   - **Repository access**: pilih **Only select repositories** → pilih repo `project-monitor` yang tadi dibuat (jangan beri akses ke semua repo — cukup 1 repo ini saja, prinsip *least privilege*)
-   - **Permissions → Repository permissions**: cari **Contents**, ubah ke **Read and write**
-5. Klik **Generate token**.
-6. **Copy token yang muncul** (hanya ditampilkan sekali! simpan baik-baik, misal di password manager). Formatnya seperti `github_pat_xxxxxxxxxxxx...`.
+1. GitHub → foto profil → **Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token**.
+2. **Repository access**: Only select repositories → pilih repo ini saja.
+3. **Permissions → Contents**: ubah ke **Read and write**.
+4. **Generate token** → copy tokennya (hanya muncul sekali, simpan baik-baik).
 
-> Bagikan token ini **hanya** ke orang yang benar-benar Anda percaya untuk mengubah data proyek. Siapa pun yang punya token ini bisa menulis ke repo tersebut (walau dibatasi hanya ke 1 repo itu saja). Kalau token bocor/tidak terpakai lagi, kembali ke halaman token tadi dan klik **Delete** untuk mencabutnya.
-
----
-
-## 7. Cara login & mulai isi data
-
-1. Buka situs yang sudah live (`https://<username>.github.io/<repo>/`).
-2. Klik tombol **Login** (kanan atas) → isi **Username** & **Password** sesuai yang sudah diatur di langkah 4.
-3. Setelah berhasil login, klik tombol **Data Source** → tempel **Personal Access Token** dari langkah 6 di kolom yang muncul → klik **Save & Reload Data**.
-4. Sekarang tombol **+ Add Task** aktif — mulai tambahkan task proyek Anda. Setiap perubahan otomatis tersimpan ke `data/tasks.json` di GitHub (butuh beberapa detik).
-5. Pengunjung lain yang membuka situs yang sama (tanpa login) akan langsung melihat data terbaru — tanpa perlu setting apa pun.
-
-Token disimpan hanya di **browser milik editor tersebut** (localStorage) — tidak perlu dimasukkan ulang tiap buka situs di browser yang sama, tapi perlu diisi ulang kalau ganti perangkat/browser lain.
+Token ini dipakai di **kedua** halaman yang bisa diedit (Progress HUT80 lewat menu
+"Data Source", dan Dokumentasi lewat popup token setelah login) — masing-masing halaman
+menyimpan token itu di browser (localStorage) secara terpisah, jadi perlu diisi sekali di
+tiap halaman.
 
 ---
 
-## 8. Catatan & batasan
+## 7. Mengisi konten tiap halaman
 
-- **Rentang tanggal rencana** dibatasi 1 Jul 2026 – 30 Jun 2028 (bisa diubah lewat `MIN_DATE`/`MAX_DATE` di `index.html`, sesuaikan juga atribut `min`/`max` pada input tanggal di form).
-- **Gantt chart** otomatis menyesuaikan lebar layar (tidak perlu scroll jauh ke kanan) — bar akan terlihat sedikit lebih rapat di layar kecil, tapi seluruh rentang 24 bulan tetap muat.
-- Pembacaan data lewat GitHub API tanpa login dibatasi **60 request/jam per alamat IP** oleh GitHub — cukup untuk pemakaian tim kecil/personal; kalau situs ramai sekali, pertimbangkan solusi lain (di luar cakupan panduan ini).
-- Kalau dua editor menyimpan **persis bersamaan**, salah satu akan mendapat pesan error dan diminta reload halaman lalu coba lagi (mencegah perubahan saling menimpa).
-- Kurva-S "Realisasi" adalah pendekatan (dihitung dari progres terakhir yang diinput, bukan histori harian sungguhan).
+### Panitia
+Halaman ini **statis** (nama & jabatan sudah tertulis langsung di `panitia.html`, tidak
+perlu login). Setiap orang — mulai dari Romo Moderator sampai tiap Korbid, Kasie, dan
+Wakil Kasie — punya slot foto sendiri. Upload foto ke folder `data/photo/panitia/` dengan
+nama file **persis sama** seperti daftar berikut:
+
+```
+romo-moderator.jpg
+dph-pendamping-1.jpg, dph-pendamping-2.jpg, dph-pendamping-3.jpg
+ketua.jpg
+wakil-ketua-1.jpg, wakil-ketua-2.jpg
+sekretaris-1.jpg, sekretaris-2.jpg
+bendahara-1.jpg, bendahara-2.jpg
+
+korbid-acara.jpg
+  kasie-liturgi.jpg
+  kasie-starfest.jpg, wakil-kasie-starfest.jpg
+  kasie-funwalk.jpg, wakil-kasie-funwalk.jpg
+  kasie-retret.jpg, wakil-kasie-retret.jpg
+  kasie-kenduri.jpg
+
+korbid-pubdoc.jpg
+  kasie-publikasi.jpg
+  kasie-dokumentasi.jpg
+
+korbid-dana.jpg
+  kasie-sponsorship.jpg
+  kasie-donatur.jpg
+
+korbid-sarana-umum.jpg
+  kasie-perlengkapan.jpg
+  kasie-dekorasi.jpg
+
+korbid-jasa-umum.jpg
+  kasie-keamanan-parkir.jpg
+  kasie-kebersihan.jpg
+  kasie-kesehatan.jpg
+  kasie-konsumsi.jpg
+  kasie-humas.jpg
+  kasie-perizinan.jpg
+
+pic-buku-sejarah.jpg
+pic-hymne.jpg
+pic-logo.jpg
+```
+
+Semua nama file ini juga ditampilkan kecil di bawah/samping tiap foto di halaman Panitia,
+jadi tidak perlu dihafal — tinggal disesuaikan saat upload. Foto yang belum ada otomatis
+diganti gambar siluet abu-abu sementara.
+
+> Catatan: dua nama peran sedikit saya rapikan penulisannya supaya konsisten dengan
+> yang lain — "PIC Buku Sejara" → **PIC Buku Sejarah**, dan "Kasi Perizinan" →
+> **Kasie Perizinan**. Beri tahu saya kalau ternyata penulisan aslinya memang begitu.
+
+### Progress HUT80
+Sama seperti sebelumnya — login, isi token, lalu tambah/edit/hapus task lewat tombol
+"+ Add Task".
+
+### Dokumentasi
+1. Buka halaman **Dokumentasi**, klik **Login**, isi username/password.
+2. Kalau diminta, tempel Personal Access Token.
+3. Klik **+ Tambah Album** untuk bikin album baru (misal "Retret", "Kenduri"), atau pakai
+   2 album bawaan ("Fun Walk", "Starfest").
+4. Klik **+ Tambah Foto** di album yang dituju → pilih foto dari perangkat → foto otomatis
+   diunggah ke `data/photo/event/` dan langsung tampil untuk semua pengunjung.
+5. Foto juga bisa ditambah manual: upload file ke `data/photo/event/` lewat GitHub, lalu
+   edit `data/documentation.json` untuk menambahkan entri `{"file": "data/photo/event/nama-file.jpg", "caption": "..."}`
+   ke dalam album yang sesuai.
+
+### Kontak
+Statis, sudah terisi sesuai data yang diberikan. Edit langsung di `kontak.html` kalau ada
+perubahan alamat/telepon di kemudian hari.
+
+---
+
+## 8. Catatan keamanan (baca ini)
+
+- Password login di `hut80-progress.html`/`dokumentasi.html` hanyalah gerbang UI
+  sederhana — bukan proteksi tingkat server. Proteksi sesungguhnya ada pada **Personal
+  Access Token**, yang benar-benar diverifikasi GitHub. Berikan token hanya ke orang yang
+  Anda percaya untuk mengubah data.
+- Karena repo bersifat Public, seluruh isi `data/` (termasuk foto panitia & dokumentasi)
+  bisa diakses siapa saja yang tahu URL-nya, terlepas dari status login di aplikasi.
+- Kalau token bocor atau tidak dipakai lagi, cabut dari GitHub → Settings → Developer
+  settings → Personal access tokens → **Delete**.
