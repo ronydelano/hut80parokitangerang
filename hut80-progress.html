@@ -495,7 +495,7 @@ function renderTable(){
       <td>${escapeHtml(t.pic||'') || '—'}</td>
       <td>${fmtShort(t.start)}</td>
       <td>${fmtShort(t.end)}</td>
-      <td><span class="progress-bar"><span class="progress-fill" style="width:${t.progress}%; background-color: ${t.progress === 100 ? 'var(--success)' : '#999'};"></span></span> ${t.progress}%</td>
+      <td><span class="progress-bar"><span class="progress-fill" style="display: block; width:${t.progress}%; background-color: ${t.progress == 100 ? 'var(--success)' : '#999'};"></span></span> ${t.progress}%</td>
       <td><span class="pill ${STATUS_CLASS[st]}">${STATUS_LABEL[st]}</span></td>
       <td>${actionCell}</td>
     </tr>`;
