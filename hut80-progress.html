@@ -271,13 +271,13 @@ function computeStatus(t){
    every anonymous visitor will use by default.
    ============================================================ */
 const DEFAULT_GH_CONFIG = {
-  owner:  'YOUR_GITHUB_USERNAME',   // <-- EDIT: your GitHub username or org
-  repo:   'YOUR_REPO_NAME',         // <-- EDIT: the repo that hosts this app + data
+  owner:  'ronydelano',   // <-- EDIT: your GitHub username or org
+  repo:   'hut80parokitangerang',         // <-- EDIT: the repo that hosts this app + data
   branch: 'main',                   // <-- EDIT if your default branch differs
   path:   'data/tasks.json'
 };
 function isPlaceholderConfig(){
-  return DEFAULT_GH_CONFIG.owner === 'YOUR_GITHUB_USERNAME' || DEFAULT_GH_CONFIG.repo === 'YOUR_REPO_NAME';
+  return DEFAULT_GH_CONFIG.owner === 'ronydelano' || DEFAULT_GH_CONFIG.repo === 'hut80parokitangerang';
 }
 
 /* ============================================================
@@ -299,7 +299,7 @@ function isPlaceholderConfig(){
 const USERS = [
   // username, sha256(password) — default: admin / admin123 — CHANGE THIS before publishing
   { username: 'admin', hash: '7823c8b7d47f7fa403ff89f914520a686154de90ff9eabebea7a480a4a76203e' },
-  { username: 'panitia', hash: 'b8b668a65974dfdbb88abbfa9f5ffda03876bb0dcfd9cef2c2c90cc3844008ba' } //panitia32!
+  { username: 'panitia', hash: 'b8b668a65974dfdbb88abbfa9f5ffda03876bb0dcfd9cef2c2c90cc3844008ba' } 
 ];
 
 async function sha256Hex(str){
